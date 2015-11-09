@@ -1054,7 +1054,7 @@ cdef class DenseMatrix(MatrixBase):
             s[0], s[1] = self._get_slice(item)
             s[2], s[3] = 0, self.ncols() - 1
         elif isinstance(item, int):
-            return self.get(item // self.nrows(), item % self.nrows())
+            return self.get(item // self.ncols(), item % self.ncols())
         elif isinstance(item, tuple):
             if isinstance(item[0], int) and isinstance(item[1], int):
                 return self.get(item[0], item[1])
