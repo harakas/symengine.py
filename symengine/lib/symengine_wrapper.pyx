@@ -323,6 +323,8 @@ cdef class Basic(object):
         return c2py(symengine.sub(A.thisptr, B.thisptr))
 
     def __mul__(a, b):
+        if isinstance(b, MatrixBase):
+            return b * a
         cdef Basic A = sympify(a, False)
         cdef Basic B = sympify(b, False)
         if A is None or B is None: return NotImplemented
@@ -1006,7 +1008,29 @@ cdef class DenseMatrix(MatrixBase):
 
     """
 
-    def __cinit__(self, row, col, v=None):
+    def __cinit__(self, *args):
+        if len(args) == 1:
+          data = args[0]
+          assert isinstance(data, (list, tuple))
+          row = len(data)
+          assert row > 0
+          if not isinstance(data[0], (list, tuple)):
+            col = 1
+            v = data
+          else:
+            col = len(data[0])
+            v = []
+            for r in data:
+              assert len(r) == col
+              v = v + r
+        else:
+          assert len(args) >= 2 and len(args) <= 3
+          if len(args) == 2:
+            row, col = args
+            v = None
+          else:
+            row, col, v = args
+
         if v == None:
             self.thisptr = new symengine.DenseMatrix(row, col)
             return
@@ -1030,17 +1054,22 @@ cdef class DenseMatrix(MatrixBase):
         b = sympify(b)
         if isinstance(a, MatrixBase):
             if isinstance(b, MatrixBase):
+                assert a.ncols() == b.ncols() and a.nrows() == b.nrows(), "Invalid matrix dimensions."
                 return a.add_matrix(b)
             else:
                 return a.add_scalar(b)
         else:
             return b.add_scalar(a)
 
+    def __sub__(a, b):
+        return a + (-1 * b)
+
     def __mul__(a, b):
         a = sympify(a)
         b = sympify(b)
         if isinstance(a, MatrixBase):
             if isinstance(b, MatrixBase):
+                assert a.ncols() == b.nrows(), "Invalid matrix dimensions."
                 return a.mul_matrix(b)
             else:
                 return a.mul_scalar(b)
@@ -1302,6 +1331,20 @@ cdef class DenseMatrix(MatrixBase):
                 out[ri*nc + ci] = symengine.eval_complex_double(deref(
                     <symengine.RCP[const symengine.Basic]>(deref(self.thisptr).get(ri, ci))))
 
+    def dot(self, other):
+        assert self.ncols() == 1 and other.ncols() == 1, "not column vectors!"
+        return (self.transpose() * other)[0]
+
+    def norm(self):
+        return sqrt(self.dot(self))
+
+    def cross(self, other):
+        assert self.ncols() == 1 and self.nrows() == 3 and other.ncols() == 1 and other.nrows() == 3, "not column 3-vectors!"
+        return DenseMatrix([
+            self[1] * other[2] - self[2] * other[1],
+            self[2] * other[0] - self[0] * other[2],
+            self[0] * other[1] - self[1] * other[0]
+        ])
 
 cdef class Sieve:
     @staticmethod
