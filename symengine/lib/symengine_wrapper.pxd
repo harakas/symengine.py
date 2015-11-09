@@ -109,8 +109,8 @@ cdef class ACoth(HyperbolicFunction):
 cdef class FunctionSymbol(Function):
     pass
 
-cdef class FunctionWrapper(FunctionSymbol):
-    pass
+#cdef class FunctionWrapper(FunctionSymbol):
+#    pass
 
 cdef class Abs(Function):
     pass

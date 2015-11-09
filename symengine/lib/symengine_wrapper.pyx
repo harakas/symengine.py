@@ -44,8 +44,8 @@ cdef c2py(RCP[const symengine.Basic] o):
         r = Derivative.__new__(Derivative)
     elif (symengine.is_a_Subs(deref(o))):
         r = Subs.__new__(Subs)
-    elif (symengine.is_a_FunctionWrapper(deref(o))):
-        r = FunctionWrapper.__new__(FunctionWrapper)
+    #elif (symengine.is_a_FunctionWrapper(deref(o))):
+    #    r = FunctionWrapper.__new__(FunctionWrapper)
     elif (symengine.is_a_RealDouble(deref(o))):
         r = RealDouble.__new__(RealDouble)
     elif (symengine.is_a_ComplexDouble(deref(o))):
@@ -194,8 +194,8 @@ def sympy2symengine(a, raise_error=False):
     elif isinstance(a, sympy_AppliedUndef):
         name = str(a.func)
         return function_symbol(name, *(a.args))
-    elif isinstance(a, sympy.Function):
-        return FunctionWrapper(a)
+    #elif isinstance(a, sympy.Function):
+    #    return FunctionWrapper(a)
     elif isinstance(a, sympy.Matrix):
         row, col = a.shape
         v = []
@@ -779,37 +779,37 @@ cdef inline void SymPy_XINCREF(void* o):
 cdef inline int SymPy_CMP(void* o1, void* o2):
     return <int>PyObject_CallMethodObjArgs(<object>o1, "compare", <PyObject *>o2, NULL)
 
-cdef class FunctionWrapper(FunctionSymbol):
-
-    def __cinit__(self, sympy_function = None):
-        import sympy
-        if not isinstance(sympy_function, sympy.Function):
-            return
-        cdef void* ptr
-        ptr = <void *>(sympy_function)
-        cdef string name = str(sympy_function.func).encode("utf-8")
-        cdef string hash_ = str(sympy_function.__hash__()).encode("utf-8")
-        cdef symengine.vec_basic v
-        cdef Basic arg_
-        for arg in sympy_function.args:
-            arg_ = sympify(arg)
-            v.push_back(arg_.thisptr)
-        SymPy_XINCREF(ptr)
-        self.thisptr = symengine.make_rcp_FunctionWrapper(ptr, name, hash_, v, &SymPy_XDECREF, &SymPy_CMP)
-
-    def _sympy_(self):
-        cdef object pyobj
-        cdef RCP[const symengine.FunctionWrapper] X = \
-            symengine.rcp_static_cast_FunctionWrapper(self.thisptr)
-        pyobj = <object>(deref(X).get_object())
-        return pyobj
-
-    def _sage_(self):
-        cdef object pyobj
-        cdef RCP[const symengine.FunctionWrapper] X = \
-            symengine.rcp_static_cast_FunctionWrapper(self.thisptr)
-        pyobj = <object>(deref(X).get_object())
-        return pyobj._sage_()
+#cdef class FunctionWrapper(FunctionSymbol):
+#
+#    def __cinit__(self, sympy_function = None):
+#        import sympy
+#        if not isinstance(sympy_function, sympy.Function):
+#            return
+#        cdef void* ptr
+#        ptr = <void *>(sympy_function)
+#        cdef string name = str(sympy_function.func).encode("utf-8")
+#        cdef string hash_ = str(sympy_function.__hash__()).encode("utf-8")
+#        cdef symengine.vec_basic v
+#        cdef Basic arg_
+#        for arg in sympy_function.args:
+#            arg_ = sympify(arg)
+#            v.push_back(arg_.thisptr)
+#        SymPy_XINCREF(ptr)
+#        self.thisptr = symengine.make_rcp_FunctionWrapper(ptr, name, hash_, v, &SymPy_XDECREF, &SymPy_CMP)
+#
+#    def _sympy_(self):
+#        cdef object pyobj
+#        cdef RCP[const symengine.FunctionWrapper] X = \
+#            symengine.rcp_static_cast_FunctionWrapper(self.thisptr)
+#        pyobj = <object>(deref(X).get_object())
+#        return pyobj
+#
+#    def _sage_(self):
+#        cdef object pyobj
+#        cdef RCP[const symengine.FunctionWrapper] X = \
+#            symengine.rcp_static_cast_FunctionWrapper(self.thisptr)
+#        pyobj = <object>(deref(X).get_object())
+#        return pyobj._sage_()
 
 
 cdef class Abs(Function):

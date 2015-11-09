@@ -63,7 +63,7 @@ cdef extern from "<symengine/symengine_rcp.h>" namespace "SymEngine":
     RCP[const TrigFunction] rcp_static_cast_TrigFunction "SymEngine::rcp_static_cast<const SymEngine::TrigFunction>"(RCP[const Basic] &b) nogil
     RCP[const HyperbolicFunction] rcp_static_cast_HyperbolicFunction "SymEngine::rcp_static_cast<const SymEngine::HyperbolicFunction>"(RCP[const Basic] &b) nogil
     RCP[const FunctionSymbol] rcp_static_cast_FunctionSymbol "SymEngine::rcp_static_cast<const SymEngine::FunctionSymbol>"(RCP[const Basic] &b) nogil
-    RCP[const FunctionWrapper] rcp_static_cast_FunctionWrapper "SymEngine::rcp_static_cast<const SymEngine::FunctionWrapper>"(RCP[const Basic] &b) nogil
+    #RCP[const FunctionWrapper] rcp_static_cast_FunctionWrapper "SymEngine::rcp_static_cast<const SymEngine::FunctionWrapper>"(RCP[const Basic] &b) nogil
     RCP[const Abs] rcp_static_cast_Abs "SymEngine::rcp_static_cast<const SymEngine::Abs>"(RCP[const Basic] &b) nogil
     RCP[const Derivative] rcp_static_cast_Derivative "SymEngine::rcp_static_cast<const SymEngine::Derivative>"(RCP[const Basic] &b) nogil
     RCP[const Subs] rcp_static_cast_Subs "SymEngine::rcp_static_cast<const SymEngine::Subs>"(RCP[const Basic] &b) nogil
@@ -129,7 +129,7 @@ cdef extern from "<symengine/basic.h>" namespace "SymEngine":
     bool is_a_Abs "SymEngine::is_a<SymEngine::Abs>"(const Basic &b) nogil
     bool is_a_Derivative "SymEngine::is_a<SymEngine::Derivative>"(const Basic &b) nogil
     bool is_a_Subs "SymEngine::is_a<SymEngine::Subs>"(const Basic &b) nogil
-    bool is_a_FunctionWrapper "SymEngine::is_a<SymEngine::FunctionWrapper>"(const Basic &b) nogil
+    #bool is_a_FunctionWrapper "SymEngine::is_a<SymEngine::FunctionWrapper>"(const Basic &b) nogil
     bool is_a_RealDouble "SymEngine::is_a<SymEngine::RealDouble>"(const Basic &b) nogil
     bool is_a_ComplexDouble "SymEngine::is_a<SymEngine::ComplexDouble>"(const Basic &b) nogil
     bool is_a_RealMPFR "SymEngine::is_a<SymEngine::RealMPFR>"(const Basic &b) nogil
@@ -230,8 +230,8 @@ cdef extern from "<symengine/basic.h>" namespace "SymEngine":
     RCP[const Basic] make_rcp_Integer "SymEngine::make_rcp<const SymEngine::Integer>"(mpz_class i) nogil
     RCP[const Basic] make_rcp_Subs "SymEngine::make_rcp<const SymEngine::Subs>"(const RCP[const Basic] &arg, const map_basic_basic &x) nogil
     RCP[const Basic] make_rcp_Derivative "SymEngine::make_rcp<const SymEngine::Derivative>"(const RCP[const Basic] &arg, const vec_basic &x) nogil
-    RCP[const Basic] make_rcp_FunctionWrapper "SymEngine::make_rcp<const SymEngine::FunctionWrapper>"(void* obj, string name, string hash_, const vec_basic &arg, \
-            void (*dec_ref)(void *), int (*comp)(void *, void *)) nogil
+    #RCP[const Basic] make_rcp_FunctionWrapper "SymEngine::make_rcp<const SymEngine::FunctionWrapper>"(void* obj, string name, string hash_, const vec_basic &arg, \
+    #        void (*dec_ref)(void *), int (*comp)(void *, void *)) nogil
     RCP[const Basic] make_rcp_RealDouble "SymEngine::make_rcp<const SymEngine::RealDouble>"(double x) nogil
     RCP[const Basic] make_rcp_ComplexDouble "SymEngine::make_rcp<const SymEngine::ComplexDouble>"(double complex x) nogil
 
@@ -331,10 +331,10 @@ cdef extern from "<symengine/functions.h>" namespace "SymEngine":
     cdef cppclass FunctionSymbol(Function):
         string get_name() nogil
 
-    cdef cppclass FunctionWrapper(FunctionSymbol):
-        FunctionWrapper(void* obj, string name, string hash_, const vec_basic &arg, \
-            void (*dec_ref)(void *), int (*comp)(void *, void *))
-        void* get_object()
+    #cdef cppclass FunctionWrapper(FunctionSymbol):
+    #    FunctionWrapper(void* obj, string name, string hash_, const vec_basic &arg, \
+    #        void (*dec_ref)(void *), int (*comp)(void *, void *))
+    #    void* get_object()
 
     cdef cppclass Derivative(Basic):
         Derivative(const RCP[const Basic] &arg, const vec_basic &x) nogil
