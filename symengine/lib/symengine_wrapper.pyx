@@ -251,6 +251,51 @@ def sympify(a, raise_error=True):
         return sympy2symengine(a._sympy_(), raise_error)
     return sympy2symengine(a, raise_error)
 
+cdef class Dict(object):
+    cdef symengine.map_basic_basic c
+
+    def add(self, key, value):
+        cdef Basic K = sympify(key)
+        cdef Basic V = sympify(value)
+        cdef symengine.std_pair_rcp_const_basic_rcp_const_basic pair
+        pair.first = K.thisptr
+        pair.second = V.thisptr
+        self.c.insert(pair)
+
+    def get(self, key):
+        cdef Basic K = sympify(key)
+        it = self.c.find(K.thisptr)
+        if it == self.c.end():
+            return None
+        else:
+            return c2py(deref(it).second)
+
+    def __len__(self):
+        return self.c.size()
+
+    def __getitem__(self, key):
+        val = self.get(key)
+        if val == None:
+            raise KeyError(key)
+        return val
+
+    def __setitem__(self, key, value):
+        cdef Basic K = sympify(key)
+        cdef Basic V = sympify(value)
+        self.c[K.thisptr] = V.thisptr
+
+    def clear(self):
+        self.clear()
+
+    def __delitem__(self, key):
+        cdef Basic K = sympify(key)
+        self.c.erase(K.thisptr)
+
+    def has_key(self, key):
+        cdef Basic K = sympify(key)
+        it = self.c.find(K.thisptr)
+        return it != self.c.end()
+
 cdef class Basic(object):
 
     def __str__(self):
@@ -346,6 +391,10 @@ cdef class Basic(object):
         return c2py(deref(self.thisptr).diff(X))
 
     def subs_dict(Basic self not None, subs_dict):
+        cdef Dict D
+        if isinstance(subs_dict, Dict):
+          D = subs_dict
+          return c2py(deref(self.thisptr).subs(D.c))
         cdef symengine.map_basic_basic d
         cdef Basic K, V
         for k in subs_dict:
