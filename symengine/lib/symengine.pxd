@@ -145,6 +145,7 @@ cdef extern from "<symengine/basic.h>" namespace "SymEngine":
     bool is_a_ASin "SymEngine::is_a<SymEngine::ASin>"(const Basic &b) nogil
     bool is_a_ACos "SymEngine::is_a<SymEngine::ACos>"(const Basic &b) nogil
     bool is_a_ATan "SymEngine::is_a<SymEngine::ATan>"(const Basic &b) nogil
+    bool is_a_ATan2 "SymEngine::is_a<SymEngine::ATan2>"(const Basic &b) nogil
     bool is_a_ACot "SymEngine::is_a<SymEngine::ACot>"(const Basic &b) nogil
     bool is_a_ACsc "SymEngine::is_a<SymEngine::ACsc>"(const Basic &b) nogil
     bool is_a_ASec "SymEngine::is_a<SymEngine::ASec>"(const Basic &b) nogil
@@ -276,6 +277,7 @@ cdef extern from "<symengine/functions.h>" namespace "SymEngine":
     cdef RCP[const Basic] asin(RCP[const Basic] &arg) nogil except+
     cdef RCP[const Basic] acos(RCP[const Basic] &arg) nogil except+
     cdef RCP[const Basic] atan(RCP[const Basic] &arg) nogil except+
+    cdef RCP[const Basic] atan2(RCP[const Basic] &y, RCP[const Basic] &x) nogil except+
     cdef RCP[const Basic] acot(RCP[const Basic] &arg) nogil except+
     cdef RCP[const Basic] acsc(RCP[const Basic] &arg) nogil except+
     cdef RCP[const Basic] asec(RCP[const Basic] &arg) nogil except+
@@ -322,6 +324,10 @@ cdef extern from "<symengine/functions.h>" namespace "SymEngine":
 
     cdef cppclass ATan(TrigFunction):
         pass
+
+    cdef cppclass ATan2(Function):
+        RCP[const Basic] get_num() nogil
+        RCP[const Basic] get_den() nogil
 
     cdef cppclass ACot(TrigFunction):
         pass

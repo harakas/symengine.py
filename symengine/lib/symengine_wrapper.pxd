@@ -70,6 +70,9 @@ cdef class ACos(TrigFunction):
 cdef class ATan(TrigFunction):
     pass
 
+cdef class ATan2(Function):
+    pass
+
 cdef class ACot(TrigFunction):
     pass
 

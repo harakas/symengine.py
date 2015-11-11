@@ -74,6 +74,8 @@ cdef c2py(RCP[const symengine.Basic] o):
         r = ACos.__new__(ACos)
     elif (symengine.is_a_ATan(deref(o))):
         r = ATan.__new__(ATan)
+    elif (symengine.is_a_ATan2(deref(o))):
+        r = ATan2.__new__(ATan2)
     elif (symengine.is_a_ACot(deref(o))):
         r = ACot.__new__(ACot)
     elif (symengine.is_a_ACsc(deref(o))):
@@ -160,6 +162,8 @@ def sympy2symengine(a, raise_error=False):
             return acos(a.args[0])
         elif isinstance(a, sympy.atan):
             return atan(a.args[0])
+        elif isinstance(a, sympy.atan2):
+            return atan2(a.args[0], a.args[1])
         elif isinstance(a, sympy.acot):
             return acot(a.args[0])
         elif isinstance(a, sympy.acsc):
@@ -1446,6 +1450,11 @@ def acos(x):
 def atan(x):
     cdef Basic X = sympify(x)
     return c2py(symengine.atan(X.thisptr))
+
+def atan2(y, x):
+    cdef Basic Y = sympify(y)
+    cdef Basic X = sympify(x)
+    return c2py(symengine.atan2(Y.thisptr, X.thisptr))
 
 def acot(x):
     cdef Basic X = sympify(x)
