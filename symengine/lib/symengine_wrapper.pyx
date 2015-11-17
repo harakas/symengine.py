@@ -1098,6 +1098,9 @@ cdef class DenseMatrix(MatrixBase):
     def __sub__(a, b):
         return a + (-1 * b)
 
+    def __neg__(self):
+        return -1 * self
+
     def __mul__(a, b):
         a = sympify(a)
         b = sympify(b)
