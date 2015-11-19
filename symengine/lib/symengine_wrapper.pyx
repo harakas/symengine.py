@@ -439,6 +439,19 @@ cdef class Basic(object):
             d[K.thisptr] = V.thisptr
         return c2py(deref(self.thisptr).subs(d))
 
+    def subs_recursive(Basic self not None, subs_dict):
+        cdef DictBasic D
+        if isinstance(subs_dict, DictBasic):
+          D = subs_dict
+          return c2py(deref(self.thisptr).subs_recursive(D.c))
+        cdef symengine.map_basic_basic d
+        cdef Basic K, V
+        for k in subs_dict:
+            K = sympify(k)
+            V = sympify(subs_dict[k])
+            d[K.thisptr] = V.thisptr
+        return c2py(deref(self.thisptr).subs_recursive(d))
+
     def subs_oldnew(Basic self not None, old, new):
         return self.subs_dict({old: new})
 

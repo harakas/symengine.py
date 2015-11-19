@@ -123,6 +123,7 @@ cdef extern from "<symengine/basic.h>" namespace "SymEngine":
         unsigned int hash() nogil except +
         RCP[const Basic] diff(RCP[const Symbol] &x) nogil except +
         RCP[const Basic] subs(map_basic_basic &x) nogil except +
+        RCP[const Basic] subs_recursive(map_basic_basic &x) nogil except +
         vec_basic get_args() nogil
 
     bool eq(const Basic &a, const Basic &b) nogil except +
